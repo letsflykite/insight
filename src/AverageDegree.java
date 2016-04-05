@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class AverageDegree {
-    /* ========== data structures ========== */
+
     // hashtag list, each entry is like <[Apache, Hadoop, Storm], timestamp>
     private PriorityQueue<Tweet> tweets = new PriorityQueue<Tweet>(new TweetComparator());
     
@@ -45,45 +45,11 @@ public class AverageDegree {
      * E = number of edges in the edge list; V = number of vertices in the vertex list;
      * average_degree = (2 * E) / V; output average_degree;
      */
-    /*
-     * ---------- 1. BinaryHeap ---------- min heap of tweet timestamps only insertions and
-     * deletions/extractions are needed using BinaryHeap implementation from
-     * org.apache.commons.collections
-     */
-//    PriorityQueue<TweetComparator> dateHeap = new PriorityQueue<TweetComparator>();
-
-    /*
-     * ---------- 2. HashMap<Date, ArrayList<String>> ---------- Hashtable with tweet dates as keys
-     * and list of edge Strings formed by the hashtags as values example tweet: Date=>date123,
-     * Hashtags=> #a, #b, #c HashMap entry: < date123: < "a-b", "a-c", "b-c" > > using standard Java
-     * HashMap implementation
-     */
-    HashMap<Date, ArrayList<String>> dateEdgeMap = new HashMap<>();
-
-    /*
-     * ---------- 3. HashMap<String, Integer> ---------- Hashtable with edge Strings as keys and how
-     * many tweets contributed those edges as values example tweets: tweet1=> #a, #b, #c; tweet2=>
-     * #a, #c respective edges: tweet1=> a-b, a-c, b-c; tweet2=> a-c HashMap entries: <"a-b": 1>,
-     * <"a-c": 2>, <"b-c": 1> "a-c" has value 2 because 2 tweets contributed to that edge we
-     * maintain contributions only from tweets in the 60 second window using standard Java HashMap
-     * implementation
-     */
-    HashMap<String, Integer> edgeContributionMap = new HashMap<>();
-
-    /*
-     * ---------- 4. HashMap<String, Integer> ---------- Hashtable with vertices(hashtags) as keys
-     * and degrees as values example tweets: tweet1=> #a, #b, #c; tweet2=> #a, #d HashMap entries:
-     * <"a": 3>, <"b": 2>, <"c": 2>, <"d": 1> "a" has 3 edges to "b", "c" and "d"; "d" has only 1
-     * edge to "a" this HashMap lets us determine when a vertex is not connected to anyone else
-     */
-    HashMap<String, Integer> vertexDegreeMap = new HashMap<>();
 
     private String currentAvgDegree;
 
     public Date maxTimestamp; // current max timestamp processed
     private int nodes;
-    // private float vertex;
-//    private PriorityQueue<Node> graph;
 
     public AverageDegree() {
         // public List<Node> graph;
@@ -107,16 +73,9 @@ public class AverageDegree {
      * window.
      */
 
-//    final static Logger logger = Logger.getLogger(AverageDegree.class);
+    //    final static Logger logger = Logger.getLogger(AverageDegree.class);
 
-    // private void updateGraphbyTime() {
-    // Date minTimestampinQ = graph.peek().get_ttl();
-    //
-    // if ((maxTimestamp.getTime() - minTimestampinQ.getTime()) >= 60000) {// evict those 60s or
-    // // older
-    //
-    // }
-    // }
+
 
     // evict old tweets, remove edges, remove vertices
     public void evictTweets() {
@@ -197,65 +156,10 @@ public class AverageDegree {
     }
 
     /**
-     * Will check if a node is already in the graph with the same name Will not insert and stop
-     * immediately if it finds one
-     * 
-     * @param n
-     */
-    // private void add_Node(Node n) {
-    //
-    // for (int t = 0; t < graph.size(); t++) {
-    // if (graph.get(t).name.equals(n.name)) {
-    // break;
-    // } else if (!graph.get(t).name.equals(n.name) && t == graph.size() - 1) {
-    // nodes += 1;
-    // graph.add(n);
-    // }
-    //
-    // /**
-    // * Our cleanup starts here Cleanup will go through the nodes and check out the
-    // * timestamps. If the timestamp is out of our 60 sec range, it will enter said node to
-    // * see what edges have expired and remove them. If there are no more edges, the node is
-    // * deleted as well.
-    // **/
-    // if (maxTimestamp.getTime() - (graph.get(t).get_ttl().getTime()) > 60000) {
-    // Date lowest = maxTimestamp;
-    // for (int e = 0; e < graph.get(t).edges.size(); e++) {
-    // if (maxTimestamp.getTime() - graph.get(t).edges.get(e).get_time().getTime() > 60000) {
-    // graph.get(t).remove_edge(graph.get(t).edges.get(e));
-    // } else if (lowest.after(graph.get(t).edges.get(e).get_time())) {
-    // lowest = graph.get(t).edges.get(e).get_time();
-    // }
-    // }
-    // /*
-    // * the graph should only contain connected nodes, and this also means that you may
-    // * need to remove nodes if they are no longer connected once tweets are evicted from
-    // * the 60-second window.
-    // */
-    // if (graph.get(t).get_Num_Edges() <= 0) {
-    // remove_Node(graph.get(t));
-    // } else {
-    // graph.get(t).set_ttl(lowest);
-    // }
-    // }
-    // }
-    // }
-    //
-    // private void remove_Node(Node n) {
-    // if (graph.contains(n) == true) {
-    // nodes -= 1;
-    // graph.remove(n);
-    // }
-    // }
-
-    /**
      * This is our function to find our average vertex before we output it to a file
      */
     private void count() {
-        // int sum = 0;
-        // for (int i = 0; i < graph.size(); i++) {
-        // sum += graph.get(i).get_Num_Edges();
-        // }
+    
         long numEdges = hashTagEdgeCount.size();
         long numVertices = hashTagVerticeCount.size();
         if ((numEdges> 0)&&(numVertices>0)) {
@@ -266,152 +170,8 @@ public class AverageDegree {
             setCurrentAvgDegree("0.00");
     }
 
-    // private void updateAvgDegree() {
-    // return String.format("%.2f", vertex);
-    // }
-
-    /*
-     * private static class EventsimProcessorDef implements ProcessorDef {
-     * 
-     * @Override public Processor<String, String> instance() { return new Processor<String,
-     * String>() { private ProcessorContext context; private KeyValueStore<String, String> kvStore;
-     * ObjectMapper mapper;
-     * 
-     * private HashMap<String, Long> artistToPlayCount; private HashMap<String, Long>
-     * songToPlayCount;
-     * 
-     * private MinMaxPriorityQueue<Pair<String, Long>> artistToPlayCountQueue; private
-     * MinMaxPriorityQueue<Pair<String, Long>> songToPlayCountQueue;
-     * 
-     * private static final int TOP_N = 10;
-     * 
-     * private AtomicInteger currentGeneration = new AtomicInteger(0);
-     * 
-     * @Override public void init(ProcessorContext context) { this.context = context;
-     * this.context.schedule(windowsizems); this.kvStore = new InMemoryKeyValueStore<String,
-     * String>( "local-state", context); this.mapper = new ObjectMapper();
-     * 
-     * artistToPlayCount = new HashMap<String, Long>(); songToPlayCount = new HashMap<String,
-     * Long>();
-     * 
-     * createQueues(); }
-     * 
-     * private void createQueues() { Comparator<Pair<String, Long>> comparator = new
-     * Comparator<Pair<String, Long>>() {
-     * 
-     * @Override public int compare(Pair<String, Long> o1, Pair<String, Long> o2) { return
-     * o1.getValue().compareTo(o2.getValue()) * -1; }
-     * 
-     * };
-     * 
-     * artistToPlayCountQueue = MinMaxPriorityQueue
-     * .orderedBy(comparator).maximumSize(TOP_N).create(); songToPlayCountQueue =
-     * MinMaxPriorityQueue .orderedBy(comparator).maximumSize(TOP_N).create(); }
-     * 
-     * @Override public void process(String key, String value) { String mapKey = getKeyName(value);
-     * String oldValue = this.kvStore.get(mapKey);
-     * 
-     * if (oldValue == null) { // Swap k/v around as eventsim key is null this.kvStore.put(mapKey,
-     * value); } else { // TODO: Handle when k/v already there // this.kvStore.put(key, oldValue +
-     * newValue); }
-     * 
-     * context.commit(); }
-     * 
-     * @Override public void punctuate(long streamTime) { currentGeneration.incrementAndGet();
-     * 
-     * KeyValueIterator<String, String> iter = this.kvStore.all();
-     * 
-     * double totalDuration = 0;
-     * 
-     * long totalEntries = 0;
-     * 
-     * while (iter.hasNext()) { Entry<String, String> entry = iter.next();
-     * 
-     * totalEntries++;
-     * 
-     * if (entry.value() != null) { try { JsonNode rootNode = mapper.readTree(entry .value()); // /*
-     * // * Example input: // * {"ts":1442428043000,"userId":23545, // * "sessionId":23544 // *
-     * ,"page":"NextSong","auth":"Logged In" // * ,"method":"PUT" // *
-     * ,"status":200,"level":"paid","itemInSession" // * :35,"location" // * :
-     * "New York-Newark-Jersey City, NY-NJ-PA" // * ,"userAgent": // *
-     * "\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36\""
-     * // * ,"lastName":"Barnes","firstName":"Camila", // * "registration" // *
-     * :1442043066000,"gender":"F","artist" // * :"Radiohead","song" // * :"Creep (Explicit)"
-     * ,"duration":235.7024} // JsonNode artist = rootNode.path("artist"); JsonNode song =
-     * rootNode.path("song"); JsonNode duration = rootNode.path("duration");
-     * 
-     * addOrUpdate(artist.asText(), artistToPlayCount); addOrUpdate(song.asText(), songToPlayCount);
-     * 
-     * totalDuration += duration.asDouble();
-     * 
-     * if (checkDelete(entry.key())) { iter.remove(); } } catch (Exception e) { e.printStackTrace();
-     * } } }
-     * 
-     * iter.close();
-     * 
-     * context.forward(null, output(totalDuration, totalEntries));
-     * 
-     * // Clear things for the next window artistToPlayCount.clear(); songToPlayCount.clear(); }
-     * 
-     * private boolean checkDelete(String key) { // Use a rolling window and generations to keep
-     * more data String[] parts = key.split("-");
-     * 
-     * try { int gen = Integer.parseInt(parts[1]);
-     * 
-     * if (gen < currentGeneration.get() - maximumGenerations) { return true; } } catch (Exception
-     * e) { logger.debug(e); }
-     * 
-     * return false; }
-     * 
-     * private String output(double totalDuration, long totalEntries) { StringBuilder builder = new
-     * StringBuilder("{");
-     * 
-     * // The total amount played builder.append("\"totalduration\":").append(totalDuration)
-     * .append(",");
-     * 
-     * // Add the artist plays builder.append("\"artisttoplaycount\": ["); processCounts(builder,
-     * artistToPlayCount, artistToPlayCountQueue); builder.append("], ");
-     * 
-     * // Add the song plays builder.append("\"songtoplaycount\": ["); processCounts(builder,
-     * songToPlayCount, songToPlayCountQueue); builder.append("],");
-     * 
-     * // Add the other totals builder.append("\"totals\": {"); builder.append("\"totalentries\": "
-     * ).append(totalEntries) .append(","); builder.append("\"totalsongs\": ")
-     * .append(songToPlayCount.size()).append(","); builder.append("\"totalartists\": ").append(
-     * artistToPlayCount.size()); builder.append("} }");
-     * 
-     * return builder.toString(); }
-     * 
-     * private void processCounts(StringBuilder builder, HashMap<String, Long> map,
-     * MinMaxPriorityQueue<Pair<String, Long>> queue) { Iterator<java.util.Map.Entry<String, Long>>
-     * iterator = map .entrySet().iterator();
-     * 
-     * queue.clear();
-     * 
-     * while (iterator.hasNext()) { java.util.Map.Entry<String, Long> entry = iterator .next();
-     * queue.add(new Pair<String, Long>(entry.getKey(), entry .getValue())); }
-     * 
-     * Iterator<Pair<String, Long>> queueIter = queue.iterator();
-     * 
-     * while (queueIter.hasNext()) { Pair<String, Long> entry = queueIter.next();
-     * 
-     * builder.append("{\"name\" : \"").append(entry.getKey()) .append("\",");
-     * 
-     * builder.append("\"count\" : ").append(entry.getValue()) .append("}");
-     * 
-     * if (queueIter.hasNext()) { builder.append(","); } } }
-     * 
-     * private void addOrUpdate(String key, HashMap<String, Long> map) { // Make sure the key isn't
-     * an empty string if (key.equals("")) { return; } else { Long currentValue = map.get(key); if
-     * (currentValue == null) { map.put(key, 1L); } else { map.put(key, currentValue + 1L); } } }
-     * 
-     * @Override public void close() { this.kvStore.close(); }
-     * 
-     * private String getKeyName(String value) { return String.valueOf(value.hashCode()) + "-" +
-     * currentGeneration.get(); } }; } }
-     * 
-     */
-
+    
+    
     // if the tweet has valid hashtags, insert hashtag list in tweets queue, add vertices, add edges
     public void addTweet(Date timeOfCurrentTweet, String created_at, List<String> hashtagsListinCurrentTweet) {
         int nLenTagList = hashtagsListinCurrentTweet.size();
@@ -455,8 +215,7 @@ public class AverageDegree {
             // new vertex, it does not have any connection, set the num of neighbors to zero
             hashTagVerticeCount.put(hashTag, new TagInfo(1L, 0));
 
-            // insert in graph
-            // add_Node(new Node(hashTag, timeOfCurrentTweet));
+
         } else {// hashtag exists in graph, increase counter
             // not new vertex, increase the num of tags counts, leave the num of neighbors unchanged
             // any new edge
@@ -496,9 +255,6 @@ public class AverageDegree {
 
         ObjectMapper mapper = new ObjectMapper();;
         AverageDegree avgDegree = new AverageDegree();
-        // Start the File read in process
-
-//        String line = new String();
         String strLine;
         Date timeOfCurrentTweet;
         final String df = "EEE MMM dd HH:mm:ss Z yyyy"; // "Mon Mar 28 23:23:12 +0000 2016"
@@ -595,57 +351,6 @@ public class AverageDegree {
                     // recalculate
                     avgDegree.count();
 
-                    // // Create Nodes and edges based on the hashtags.
-                    // // If they already exist update the timestamps
-                    // // This step will be skipped if the tweet only
-                    // // Has one tag or less
-                    // if (hashtagsListinCurrentTweet.size() > 1) {
-                    // for (int i = 0; i < hashtagsListinCurrentTweet.size(); i++) {
-                    // // if the hashtag exists as a vertex?
-                    //
-                    // avgDegree.add_Node(new Node(hashtagsListinCurrentTweet.get(i),
-                    // timeOfCurrentTweet));
-                    // for (int x = 0; x < hashtagsListinCurrentTweet.size(); x++) {
-                    // if (x != i) {
-                    // avgDegree.graph.get(i).add_edge(new Edge(hashtagsListinCurrentTweet.get(x),
-                    // timeOfCurrentTweet));
-                    // }
-                    // }
-                    // }
-                    // }
-                    // avgDegree.updateGraphbyTime();
-                    /**
-                     * Our cleanup starts here Cleanup will go through the nodes and check out the
-                     * timestamps. If the timestamp is out of our 60 sec range, it will enter said
-                     * node to see what edges have expired and remove them. If there are no more
-                     * edges, the node is deleted as well.
-                     **/
-                    // for (int t = 0; t < avgDegree.graph.size(); t++) {
-                    // if (avgDegree.maxTimestamp.getTime() -
-                    // (avgDegree.graph.get(t).get_ttl().getTime()) > 60000) {
-                    // Date lowest = avgDegree.maxTimestamp;
-                    // for (int e = 0; e < avgDegree.graph.get(t).edges.size(); e++) {
-                    // if (avgDegree.maxTimestamp.getTime() -
-                    // avgDegree.graph.get(t).edges.get(e).get_time().getTime() > 60000) {
-                    // avgDegree.graph.get(t).remove_edge(avgDegree.graph.get(t).edges.get(e));
-                    // } else if (lowest.after(avgDegree.graph.get(t).edges.get(e).get_time())) {
-                    // lowest = avgDegree.graph.get(t).edges.get(e).get_time();
-                    // }
-                    // }
-                    // /*
-                    // * the graph should only contain connected nodes, and this also means
-                    // * that you may need to remove nodes if they are no longer connected
-                    // * once tweets are evicted from the 60-second window.
-                    // */
-                    // if (avgDegree.graph.get(t).get_Num_Edges() <= 0) {
-                    // avgDegree.remove_Node(avgDegree.graph.get(t));
-                    // } else {
-                    // avgDegree.graph.get(t).set_ttl(lowest);
-                    // }
-                    // }
-                    // }
-                    // //recalculate
-                    // avgDegree.count();
 
 //                    logger.info("avgDeree for line "+nlineNum+": "+avgDegree.getCurrentAvgDegree());
                     System.out.println("avgDeree for line "+nlineNum+": "+avgDegree.getCurrentAvgDegree());
